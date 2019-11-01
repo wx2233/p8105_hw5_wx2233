@@ -229,13 +229,23 @@ sim_results_all %>%
 beta_data = left_join(all_data,samples_data)
 
 beta_data %>% 
-  ggplot(aes(x = beta_1, y = avg_beta_hat_all)) +
-  geom_point(color = "red", size = 5, alpha = 0.5) +
-  geom_line() +
-  geom_point(aes(x = beta_1, y = avg_beta_hat_sample), color = "blue", size = 5, alpha = 0.5) +
-  geom_line(aes(x = beta_1, y = avg_beta_hat_sample))
-
+  ggplot(aes(x = beta_1)) +
+  geom_point(aes(y = avg_beta_hat_all, color = "red"), size = 5, alpha = 0.5) +
+  geom_line(aes(y = avg_beta_hat_all, color = "red")) +
+  geom_point(aes(y = avg_beta_hat_sample,color = "blue"), size = 5, alpha = 0.5) +
+  geom_line(aes(y = avg_beta_hat_sample,color = "blue")) +
+  scale_color_identity(name = "lines",
+                       breaks = c("red", "blue"),
+                       labels = c("All data", "Samples data"),
+                       guide = "legend") +
+  labs(
+    title = "Sample Estimate Beta1 : All Estimate Beta1 Vs True Beta1",
+    x = "True Beta1",
+    y = "Estimate Beta1"
+  )
   
+
+
 ```
 
 
