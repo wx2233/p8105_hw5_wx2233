@@ -21,7 +21,8 @@ options(
 )
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
+theme_set(theme_minimal() + theme(legend.position = "bottom", text = element_text(size = 20), axis.title.x = element_text(size = 20)))
+
 set.seed(1)
 ```
 
@@ -132,7 +133,7 @@ The experiment group's observations have a increasing trend with time while the 
 
 ## Problem 3
 
-
+### Regression function
 ```{r}
 set.seed(1)
 sim_regression = function(beta1 = 0) {
@@ -156,7 +157,8 @@ sim_regression = function(beta1 = 0) {
 ```
 
 
-## 
+### Simulation
+
 ```{r}
 sim_results = 
   rerun(10000, sim_regression(0)) %>%  ## rerun
@@ -183,8 +185,7 @@ sim_results_all =
 ```
 
 
-### Power
-Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of β2 on the x axis. Describe the association between effect size and power.
+### Power and True Beta 1
 
 ```{r}
 power_data = 
@@ -198,7 +199,12 @@ sim_results_all %>%
 power_data %>% 
   ggplot(aes(x = beta_1, y = power)) +
   geom_point(color = "red ", size = 5, alpha = 0.5) +
-  geom_line()
+  geom_line() +
+    labs(
+    y = "Power",
+    x = "True beta 1",
+    title = "Association between Effect Size and Power"
+  )
 
 ```
 
@@ -206,9 +212,6 @@ Association: the power increases with the increasing of effect size.
 
 
 ### Plot of Estimate and True beta1
-
-
-Make a plot showing the average estimate of β̂ 1 on the y axis and the true value of β1 on the x axis. Make a second plot (or overlay on the first) the average estimate of β̂ 1 only in samples for which the null was rejected on the y axis and the true value of β1 on the x axis. Is the sample average of β̂ 1 across tests for which the null is rejected approximately equal to the true value of β1? Why or why not?
 
 ```{r}
 all_data = 
@@ -227,14 +230,16 @@ sim_results_all %>%
   ) 
 
 beta_data = left_join(all_data,samples_data)
+```
 
+```{r}
 beta_data %>% 
   ggplot(aes(x = beta_1)) +
   geom_point(aes(y = avg_beta_hat_all, color = "red"), size = 5, alpha = 0.5) +
   geom_line(aes(y = avg_beta_hat_all, color = "red")) +
   geom_point(aes(y = avg_beta_hat_sample,color = "blue"), size = 5, alpha = 0.5) +
   geom_line(aes(y = avg_beta_hat_sample,color = "blue")) +
-  scale_color_identity(name = "lines",
+  scale_color_identity(name = "group",
                        breaks = c("red", "blue"),
                        labels = c("All data", "Samples data"),
                        guide = "legend") +
@@ -242,10 +247,15 @@ beta_data %>%
     title = "Sample Estimate Beta1 : All Estimate Beta1 Vs True Beta1",
     x = "True Beta1",
     y = "Estimate Beta1"
-  )
+  ) 
+  
+                     
   
 
 
 ```
+
+
+The sample average of estimate beta1 across tests for which the null is rejected is not equal the true value of beta1. Becuase the null hypothesis is that beta1 = 0 and when we rejecting H0, the model will change. So we cannot gain the approximate result.
 
 
