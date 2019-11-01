@@ -77,7 +77,6 @@ Start with a dataframe containing all file names; the list.files function will h
 Iterate over file names and read in data for each subject using purrr::map and saving the result as a new variable in the dataframe
 
 Tidy the result; manipulate file names to include control arm and subject ID, make sure weekly observations are “tidy”, and do any other tidying that’s necessary
-Make a spaghetti plot showing observations on each subject over time, and comment on differences between groups.
 
 ### Create a tidy dataframe
 ```{r message=FALSE, warning=FALSE}
@@ -89,16 +88,17 @@ read_data = function(x) {
     janitor::clean_names()
 }
 
-purrr::map(file_list,read_data) %>% 
+new_data = 
+  purrr::map(file_list,read_data) %>% 
   bind_rows() %>% 
-  mutate(
-    file_names = file_list
-    ) %>% 
+  mutate(file_names = file_list) %>% 
   separate(file_names, into = c("group", "id"), sep = "_") %>% 
   mutate(
      id = str_remove(id,".csv")
   ) %>% 
-  select(id,group,everything()) %>% 
+  select(id,group,everything())
+
+new_data %>% 
   knitr::kable()
 
 
@@ -106,10 +106,26 @@ purrr::map(file_list,read_data) %>%
 
 
 
+### Plot
 
-
+Make a spaghetti plot showing observations on each subject over time, and comment on differences between groups.
 
 ```{r}
-
+new_data %>% 
+  pivot_longer(
+    week_1:week_8,
+    names_to = "week", 
+    names_prefix = "week_",
+    values_to = "observations"
+    ) %>% 
+ggplot(aes(x = week, y = observations,)) +
+  geom_line(aes(group = id,color = id)) +
+  facet_grid(.~group) +
+  labs(
+    y = "Observations",
+    x = "Week",
+    title = "Observations on Each Subject Over Time"
+  )
 ```
 
+The experiment group's observations have a increasing trend with time while the control group's observations are flutuating. Also, the experiment group's observations are more than the observations of control group. 
