@@ -140,29 +140,26 @@ sim_regression = function(beta1 = 0) {
 
 ### Simulation
 
+beta1 = 0
+
 ```{r}
 sim_results = 
   rerun(10000, sim_regression(0)) %>%  ## rerun
   bind_rows()
 ```
 
+beta1 = {1,2,3,4,5,6}
 
 ```{r}
-
-# sim_results_all = 
-#   tibble(beta_1 = c(1, 2, 3, 4, 5, 6)) %>% 
-#   mutate(
-#     output_list = map(.x = beta_1, sim_regression)) %>% 
-#   unnest
-
-
 sim_results_all = 
   tibble(beta_1 = c(1, 2, 3, 4, 5, 6)) %>% 
   mutate(
-    output_list = map(.x = beta_1, ~rerun(10000,sim_regression(beta1 = .x)))
+    output_list = 
+      map(.x = beta_1, 
+          ~bind_rows(rerun(10000,sim_regression(beta1 = .x)))
+          )
     ) %>% 
-  unnest %>% 
-  unnest
+  unnest(output_list)
 ```
 
 
