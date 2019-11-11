@@ -83,7 +83,17 @@ new_data =
 new_data %>% 
   knitr::kable()
 
+## not much sure that if we need to pivot longer here
+pivot_data = 
+new_data %>% 
+  pivot_longer(
+    week_1:week_8,
+    names_to = "week", 
+    names_prefix = "week_",
+    values_to = "observations"
+    ) 
 
+pivot_data
 ```
 
 
@@ -91,13 +101,7 @@ new_data %>%
 ### Plot
 
 ```{r}
-new_data %>% 
-  pivot_longer(
-    week_1:week_8,
-    names_to = "week", 
-    names_prefix = "week_",
-    values_to = "observations"
-    ) %>% 
+pivot_data %>% 
 ggplot(aes(x = week, y = observations)) +
   geom_line(aes(group = id,color = id)) +
   facet_grid(.~group) +
@@ -108,7 +112,7 @@ ggplot(aes(x = week, y = observations)) +
   )
 ```
 
-The experiment group's observations have a increasing trend with time while the control group's observations are flutuating. Also, the experiment group's observations are more than the observations of control group. 
+The experiment group’s observations have an increasing trend with time while the control group’s observations are fluctuating. Also, the experiment group’s observations are more than the observations of control group.
 
 ## Problem 3
 
@@ -184,10 +188,11 @@ power_data %>%
 
 ```
 
-The power of the test: proportion of times the null was rejected.
-Effect size: true beta1 - 0 = true beta1
-Association: the power increases with the increasing of effect size.
+The power of the test: proportion of times the null was rejected. 
 
+Effect size: true beta1 - 0 = true beta1 
+
+Association: the power increases with the increasing of effect size.
 
 ### Plot of Estimate and True beta1
 
@@ -231,11 +236,12 @@ beta_data %>%
 ```
 
 
-The sample average of estimate beta1 across tests for which the null is rejected is not equal the true value of beta1 when the effect size(true beta1) is small. But with the increasing of effect size, it gets closer to the true beta1.
+The sample average of estimate beta1 across tests for which the null is rejected is not equal the true value of beta1 when the effect size (true beta1) is small. But with the increasing of effect size, it gets closer to the true beta1.
 
-This is because on the one hand, when effect size is small, the power is low. And if we want to reject the hypothesis, the estimate beta need to be much more extreme and far from the null. Therefore, when effect size is small, the sample average of estimate beta1 is larger than estimate beta1 of all data. 
+This is because on the one hand, when effect size is small, the power is low. And if we want to reject the hypothesis, the estimate beta needs to be much more extreme and far from the null. Therefore, when effect size is small, the sample average of estimate beta1 is larger than estimate beta1 of all data.
 
-On the other hand, with the increase of effect size, the power also increases(figure 1 in problem 3). In this case, the estimate beta does not need to be more extremed to be rejected. So the sample average estimate beta1 is closed to estimate beta1 of all data and the true beta1.
+On the other hand, with the increase of effect size, the power also increases (figure 1 in problem 3). In this case, the estimate beta does not need to be more extreme to be rejected. So, the sample average estimate beta1 is closed to estimate beta1 of all data and the true beta1.
+
 
 
 
