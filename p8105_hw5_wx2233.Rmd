@@ -76,14 +76,15 @@ new_data =
      id = str_remove(id,".csv"),
      group = recode(group,
                     "con" = "control",
-                    "exp" = "experiment")
+                    "exp" = "experiment"),
+     group = as.factor(group)
   ) %>% 
   select(id,group,everything())
 
 new_data %>% 
   knitr::kable()
 
-## not much sure that if we need to pivot longer here
+
 pivot_data = 
 new_data %>% 
   pivot_longer(
@@ -91,7 +92,10 @@ new_data %>%
     names_to = "week", 
     names_prefix = "week_",
     values_to = "observations"
-    ) 
+    ) %>% 
+  mutate(
+    week = as.factor(week)
+  )
 
 pivot_data
 ```
